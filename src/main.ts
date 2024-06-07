@@ -1,8 +1,17 @@
-import {A11yModule} from '@angular/cdk/a11y';
-import {CommonModule} from '@angular/common';
-import {Component, ElementRef, ViewChild, computed, signal} from '@angular/core';
-import {MatSlideToggleChange, MatSlideToggleModule} from '@angular/material/slide-toggle';
-import {bootstrapApplication} from '@angular/platform-browser';
+import { A11yModule } from '@angular/cdk/a11y';
+import { CommonModule } from '@angular/common';
+import {
+  Component,
+  ElementRef,
+  ViewChild,
+  computed,
+  signal,
+} from '@angular/core';
+import {
+  MatSlideToggleChange,
+  MatSlideToggleModule,
+} from '@angular/material/slide-toggle';
+import { bootstrapApplication } from '@angular/platform-browser';
 
 const RESULT_QUOTES = [
   [
@@ -12,7 +21,11 @@ const RESULT_QUOTES = [
     'Your measurements are all over the place!',
     'Your precision needs work!',
   ],
-  ['Not too shabby.', 'Getting sharper, keep it up!', 'Not perfect, but getting better!'],
+  [
+    'Not too shabby.',
+    'Getting sharper, keep it up!',
+    'Not perfect, but getting better!',
+  ],
   [
     'Your angles are on point!',
     'Your precision is unparalleled!',
@@ -25,7 +38,12 @@ const RESULT_QUOTES = [
 const CHANGING_QUOTES = [
   ["I'm such a-cute-y!", "I'm a tiny slice of pi!", "You're doing great!"],
   ["I'm wide open!", 'Keep going!', 'Wow!', 'Wheee!!'],
-  ["I'm so obtuse!", 'The bigger the better!', "Life's too short for right angles!", 'Whoa!'],
+  [
+    "I'm so obtuse!",
+    'The bigger the better!',
+    "Life's too short for right angles!",
+    'Whoa!',
+  ],
 ];
 
 function getChangingQuote(rotateValue: number): string {
@@ -70,7 +88,11 @@ export class PlaygroundComponent {
   protected readonly resultQuote = signal('');
 
   private isDragging = false;
-  private currentInteractions: {lastChangedAt: number; face: number; quote: string} = {
+  private currentInteractions: {
+    lastChangedAt: number;
+    face: number;
+    quote: string;
+  } = {
     lastChangedAt: 75,
     face: 0,
     quote: "Hi, I'm NG the Angle!",
@@ -79,7 +101,7 @@ export class PlaygroundComponent {
   @ViewChild('staticArrow') staticArrow!: ElementRef;
 
   protected readonly totalAccuracyPercentage = computed(() => {
-    const {level, totalAccuracy} = this.gameStats();
+    const { level, totalAccuracy } = this.gameStats();
     if (level === 0) {
       return 0;
     }
@@ -89,7 +111,8 @@ export class PlaygroundComponent {
   protected readonly updatedInteractions = computed(() => {
     if (
       this.rotateVal() > 75 &&
-      Math.abs(this.rotateVal() - this.currentInteractions.lastChangedAt) > 70 &&
+      Math.abs(this.rotateVal() - this.currentInteractions.lastChangedAt) >
+        70 &&
       Math.random() > 0.5
     ) {
       this.currentInteractions = {
@@ -139,13 +162,16 @@ export class PlaygroundComponent {
 
     let calculatedAngle = 0;
     if (pointX >= 0 && pointY < 0) {
-      calculatedAngle = 90 - (Math.atan2(Math.abs(pointY), pointX) * 180) / Math.PI;
+      calculatedAngle =
+        90 - (Math.atan2(Math.abs(pointY), pointX) * 180) / Math.PI;
     } else if (pointX >= 0 && pointY >= 0) {
       calculatedAngle = 90 + (Math.atan2(pointY, pointX) * 180) / Math.PI;
     } else if (pointX < 0 && pointY >= 0) {
-      calculatedAngle = 270 - (Math.atan2(pointY, Math.abs(pointX)) * 180) / Math.PI;
+      calculatedAngle =
+        270 - (Math.atan2(pointY, Math.abs(pointX)) * 180) / Math.PI;
     } else {
-      calculatedAngle = 270 + (Math.atan2(Math.abs(pointY), Math.abs(pointX)) * 180) / Math.PI;
+      calculatedAngle =
+        270 + (Math.atan2(Math.abs(pointY), Math.abs(pointX)) * 180) / Math.PI;
     }
 
     this.rotateVal.set(calculatedAngle);
@@ -153,24 +179,29 @@ export class PlaygroundComponent {
 
   adjustAngle(degreeChange: number) {
     this.rotateVal.update((x) =>
-      x + degreeChange < 0 ? 360 + (x + degreeChange) : (x + degreeChange) % 360,
+      x + degreeChange < 0 ? 360 + (x + degreeChange) : (x + degreeChange) % 360
     );
   }
 
   touchMove(e: Event) {
     let firstTouch = (e as TouchEvent).touches[0];
     if (firstTouch) {
-      this.mouseMove({pageX: firstTouch.pageX, pageY: firstTouch.pageY} as MouseEvent);
+      this.mouseMove({
+        pageX: firstTouch.pageX,
+        pageY: firstTouch.pageY,
+      } as MouseEvent);
     }
   }
 
   guess() {
     this.isGuessModalOpen.set(true);
-    const calcAcc = Math.abs(100 - (Math.abs(this.goal() - this.rotateVal()) / 180) * 100);
+    const calcAcc = Math.abs(
+      100 - (Math.abs(this.goal() - this.rotateVal()) / 180) * 100
+    );
     this.resultQuote.set(getResultQuote(calcAcc));
     this.animatedAccuracy.set(calcAcc > 20 ? calcAcc - 20 : 0);
     this.powerUpAccuracy(calcAcc);
-    this.gameStats.update(({level, totalAccuracy}) => ({
+    this.gameStats.update(({ level, totalAccuracy }) => ({
       level: level + 1,
       totalAccuracy: totalAccuracy + calcAcc,
     }));
@@ -207,12 +238,12 @@ export class PlaygroundComponent {
     const roundedAcc = Math.floor(this.totalAccuracyPercentage() * 10) / 10;
     let emojiAccuracy = '';
     for (let i = 0; i < 5; i++) {
-      emojiAccuracy += roundedAcc >= 20 * (i + 1) ? '=é' : '';
+      emojiAccuracy += roundedAcc >= 20 * (i + 1) ? '=ï¿½' : '';
     }
     return encodeURIComponent(
-      `=Ð ${emojiAccuracy} \n My angles are ${roundedAcc}% accurate on level ${
+      `=ï¿½ ${emojiAccuracy} \n My angles are ${roundedAcc}% accurate on level ${
         this.gameStats().level
-      }. \n\nHow @Angular are you? \nhttps://angular.dev/playground`,
+      }. \n\nHow @Angular are you? \nhttps://angular.dev/playground`
     );
   }
 
